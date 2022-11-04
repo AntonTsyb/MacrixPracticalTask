@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AntonTsyb_Macrix
+namespace MacrixPracticalTask
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

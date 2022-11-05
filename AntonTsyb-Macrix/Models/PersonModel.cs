@@ -1,30 +1,186 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace MacrixPracticalTask.Models
 {
-    public class PersonModel
+    public class PersonModel : IEditableObject, INotifyPropertyChanged
     {
-        public PersonModel(string firstName,
-            string lastName, 
-            string phoneNumber,
-            DateTime dateOfBirth,
-            int age,
-            AddressModel address)
+        private string _firstName;
+        private string _lastName;
+        private string _phoneNumber;
+        private DateTime _dateOfBirth;
+        private string _town;
+        private string _postalCode;
+        private string _streetName;
+        private string _houseNumber;
+        private string _apartmentNumber;
+
+        public PersonModel()
         {
-            FirstName = firstName;
-            LastName = lastName;
-            PhoneNumber = phoneNumber;
-            DateOfBirth = dateOfBirth;
-            Age = age;
-            Address = address;
         }
 
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string PhoneNumber { get; set; }
-        public DateTime DateOfBirth { get; set; }
-        public int Age { get; }
+        public PersonModel(
+            string firstName,
+            string lastName,
+            string phoneNumber,
+            DateTime dateOfBirth,
+            string town,
+            string postalCode,
+            string streetName,
+            string houseNumber,
+            string? apartmentNumber)
+        {
+            _firstName = firstName;
+            _lastName = lastName;
+            _phoneNumber = phoneNumber;
+            _dateOfBirth = dateOfBirth;
+            _town = town;
+            _postalCode = postalCode;
+            _streetName = streetName;
+            _houseNumber = houseNumber;
+            _apartmentNumber = apartmentNumber;
+        }
 
-        public AddressModel Address { get; set; }
+        public string FirstName
+        {
+            get => _firstName;
+            set
+            {
+                if (_firstName == value) return;
+                _firstName = value;
+                OnPropertyChanged("FirstName");
+            }
+        }
+        public string LastName
+        {
+            get => _lastName;
+            set
+            {
+                if (_lastName == value) return;
+                _lastName = value;
+                OnPropertyChanged(nameof(LastName));
+            }
+        }
+        public string PhoneNumber
+        {
+            get => _phoneNumber;
+            set
+            {
+                if (_phoneNumber == value) return;
+                _phoneNumber = value;
+                OnPropertyChanged(nameof(PhoneNumber));
+            }
+        }
+        public DateTime DateOfBirth
+        {
+            get => _dateOfBirth;
+            set
+            {
+                if (_dateOfBirth == value) return;
+                _dateOfBirth = value;
+                OnPropertyChanged(nameof(DateOfBirth));
+            }
+        }
+        public int Age => DateTime.UtcNow.Year - DateOfBirth.Year;
+
+        public string Town
+        {
+            get => _town;
+            set
+            {
+                if (_town == value) return;
+                _town = value;
+                OnPropertyChanged(nameof(Town));
+            }
+        }
+        public string PostalCode
+        {
+            get => _postalCode;
+            set
+            {
+                if (_postalCode == value) return;
+                _postalCode = value;
+                OnPropertyChanged(nameof(PostalCode));
+            }
+        }
+        public string StreetName
+        {
+            get => _streetName;
+            set
+            {
+                if (_streetName == value) return;
+                _streetName = value;
+                OnPropertyChanged(nameof(StreetName));
+            }
+        }
+        public string HouseNumber
+        {
+            get => _houseNumber;
+            set
+            {
+                if (_houseNumber == value) return;
+                _houseNumber = value;
+                OnPropertyChanged(nameof(HouseNumber));
+            }
+        }
+        public string ApartmentNumber
+        {
+            get => _apartmentNumber;
+            set
+            {
+                if (_apartmentNumber == value) return;
+                _apartmentNumber = value;
+                OnPropertyChanged(nameof(ApartmentNumber));
+            }
+        }
+
+        #region IEditableObject
+        private PersonModel? _backupCopy;
+        private bool _inEdit;
+
+        public void BeginEdit()
+        {
+            if (_inEdit) return;
+            _inEdit = true;
+            _backupCopy = MemberwiseClone() as PersonModel;
+        }
+
+        public void CancelEdit()
+        {
+            if (!_inEdit || _backupCopy == null) return;
+            _inEdit = false;
+            FirstName = _backupCopy.FirstName;
+            LastName = _backupCopy.LastName;
+            PhoneNumber = _backupCopy.PhoneNumber;
+            DateOfBirth = _backupCopy.DateOfBirth;
+            Town = _backupCopy.Town;
+            PostalCode = _backupCopy.PostalCode;
+            StreetName = _backupCopy.StreetName;
+            HouseNumber = _backupCopy.HouseNumber;
+            ApartmentNumber = _backupCopy.ApartmentNumber;
+        }
+
+        public void EndEdit()
+        {
+            if (!_inEdit) return;
+            _inEdit = false;
+            _backupCopy = null;
+        }
+        #endregion
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this,
+                    new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
     }
 }

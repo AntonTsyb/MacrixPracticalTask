@@ -6,19 +6,69 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" AutoGenerateColumns="False">
+        <DataGrid Grid.Column="1" FontSize="14" ItemsSource="{Binding SongList, UpdateSourceTrigger=PropertyChanged}"
+                  AutoGenerateColumns="False"  Name="mainGrid"
+                  GridLinesVisibility="None" 
+                  AreRowDetailsFrozen="True" 
+                  RowEditEnding="mainGrid_RowEditEnding"
+                  PreviewKeyDown="mainGrid_PreviewKeyDown">
+            <DataGrid.Resources>
+                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Padding" Value="-2"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="Background" Value="Red"/>
+                            <Setter Property="ToolTip" 
+                                Value="{Binding RelativeSource={RelativeSource Self},
+                                Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="First Name"/>
-                <DataGridTextColumn Header="Last Name"/>
-                <DataGridTextColumn Header="Street Name"/>
-                <DataGridTextColumn Header="House Number"/>
-                <DataGridTextColumn Header="Apartment Number"/>
-                <DataGridTextColumn Header="Postal Code"/>
-                <DataGridTextColumn Header="Town"/>
-                <DataGridTextColumn Header="Phone Number"/>
-                <DataGridTextColumn Header="Date of Birth"/>
-                <DataGridTextColumn Header="Age" IsReadOnly="True"/>
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTextColumn Header="Street Name" Binding="{Binding StreetName,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTextColumn Header="House Number" Binding="{Binding HouseNumber,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTextColumn Header="Apartment Number" Binding="{Binding ApartmentNumber,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTextColumn Header="Postal Code" Binding="{Binding PostalCode,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTextColumn Header="Town" Binding="{Binding Town,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
+                <DataGridTemplateColumn Header="Date of Birth" IsReadOnly="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding DateOfBirth}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Age" Binding="{Binding Age}" IsReadOnly="True"/>
             </DataGrid.Columns>
+            <DataGrid.RowValidationRules>
+                <DataErrorValidationRule ValidatesOnTargetUpdated="True" ValidationStep="UpdatedValue" />
+            </DataGrid.RowValidationRules>
+
+            <DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid Margin="0,-2,0,-2"
+            ToolTip="{Binding RelativeSource={RelativeSource
+            FindAncestor, AncestorType={x:Type DataGridRow}},
+            Path=(Validation.Errors)[0].ErrorContent}">
+                        <Ellipse StrokeThickness="0" Fill="Red" 
+              Width="{TemplateBinding FontSize}" 
+              Height="{TemplateBinding FontSize}" />
+                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
+              FontWeight="Bold" Foreground="White" 
+              HorizontalAlignment="Center"  />
+                    </Grid>
+                </ControlTemplate>
+            </DataGrid.RowValidationErrorTemplate>
         </DataGrid>
+        <Button Width="200" 
+                Height="30" 
+                VerticalAlignment="Bottom" 
+                HorizontalAlignment="Center">
+            This is a button
+        </Button>
     </Grid>
 </Window>

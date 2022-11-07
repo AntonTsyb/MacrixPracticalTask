@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MacrixPracticalTask.Models
 {
-    public class PersonModel : IEditableObject, INotifyPropertyChanged
+    public class PersonModel : IEditableObject, INotifyPropertyChanged, ICloneable
     {
         private string _firstName;
         private string _lastName;
@@ -41,6 +42,8 @@ namespace MacrixPracticalTask.Models
             _apartmentNumber = apartmentNumber;
         }
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The First name cannot be empty. Please correct.")]
+        [MaxLength(64)]
         public string FirstName
         {
             get => _firstName;
@@ -51,6 +54,9 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged("FirstName");
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Last name cannot be empty. Please correct.")]
+        [MaxLength(64)]
         public string LastName
         {
             get => _lastName;
@@ -61,6 +67,9 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(LastName));
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Phone number cannot be empty. Please correct.")]
+        [MaxLength(11)]
         public string PhoneNumber
         {
             get => _phoneNumber;
@@ -71,6 +80,8 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(PhoneNumber));
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Date of birth cannot be empty. Please correct.")]
         public DateTime DateOfBirth
         {
             get => _dateOfBirth;
@@ -81,8 +92,10 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(DateOfBirth));
             }
         }
-        public int Age => DateTime.UtcNow.Year - DateOfBirth.Year;
+        public int Age => GetAge(DateTime.UtcNow, DateOfBirth);
 
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Town name cannot be empty. Please correct.")]
+        [MaxLength(32)]
         public string Town
         {
             get => _town;
@@ -93,6 +106,9 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(Town));
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Postal code cannot be empty. Please correct.")]
+        [MaxLength(10)]
         public string PostalCode
         {
             get => _postalCode;
@@ -103,6 +119,9 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(PostalCode));
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Street name cannot be empty. Please correct.")]
+        [MaxLength(32)]
         public string StreetName
         {
             get => _streetName;
@@ -113,6 +132,9 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(StreetName));
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The House number cannot be empty. Please correct.")]
+        [MaxLength(8)]
         public string HouseNumber
         {
             get => _houseNumber;
@@ -123,6 +145,9 @@ namespace MacrixPracticalTask.Models
                 OnPropertyChanged(nameof(HouseNumber));
             }
         }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "The Apartment number cannot be empty. Please correct.")]
+        [MaxLength(8)]
         public string ApartmentNumber
         {
             get => _apartmentNumber;
@@ -132,6 +157,15 @@ namespace MacrixPracticalTask.Models
                 _apartmentNumber = value;
                 OnPropertyChanged(nameof(ApartmentNumber));
             }
+        }
+
+        public static int GetAge(DateTime reference, DateTime birthday)
+        {
+            int age = reference.Year - birthday.Year;
+            if (reference < birthday.AddYears(age))
+                age--;
+
+            return age;
         }
 
         #region IEditableObject
@@ -180,7 +214,13 @@ namespace MacrixPracticalTask.Models
                     new PropertyChangedEventArgs(propertyName));
             }
         }
+        #endregion
 
+        #region ICloneable
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
         #endregion
     }
 }

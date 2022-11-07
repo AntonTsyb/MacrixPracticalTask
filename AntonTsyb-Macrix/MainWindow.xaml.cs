@@ -1,11 +1,9 @@
-﻿using DevExpress.Mvvm.DataAnnotations;
-using DevExpress.Mvvm.Xpf;
+﻿using DevExpress.Mvvm.Native;
 using DevExpress.Xpf.Grid;
 using MacrixPracticalTask.Models;
 using MacrixPracticalTask.Services;
 using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 
 namespace MacrixPracticalTask
@@ -16,13 +14,22 @@ namespace MacrixPracticalTask
     public partial class MainWindow : Window
     {
         private ObservableCollection<PersonModel> _collection;
+        private ObservableCollection<PersonModel> _backUp;
         private XmlFileService _xmlFileService;
+        private bool _isEdited;
+
         public MainWindow()
         {
             InitializeComponent();
             _xmlFileService = new XmlFileService();
             _collection = _xmlFileService.LoadData() ?? new ObservableCollection<PersonModel>();
+            //_backUp = new ObservableCollection<PersonModel>(_collection);
+            _backUp = new ObservableCollection<PersonModel>();
+            _collection
+                .ForEach(x => _backUp.Add((PersonModel)x.Clone()));
             dg_Main.ItemsSource = _collection;
+
+            CheckButtonAvailability(false);
         }
 
         #region GridControl Events
@@ -34,16 +41,15 @@ namespace MacrixPracticalTask
             };
         }
 
-        [Command]
-        public void ValidateRowDeletion(ValidateRowDeletionArgs args)
+        private void TableView_ValidateRowDeletion(object sender, GridValidateRowDeletionEventArgs e)
         {
-            var item = (PersonModel)args.Items.Single();
-            _collection.Remove(item);
+            CheckButtonAvailability(true);
         }
 
         private void OnValidateRow(object sender, GridRowValidationEventArgs e)
         {
             var personModel = (PersonModel)e.Row;
+            if (personModel == null) return;
             if (string.IsNullOrEmpty(personModel.FirstName))
             {
                 e.SetError("Please, enter first name");
@@ -88,30 +94,60 @@ namespace MacrixPracticalTask
 
         void OnInvalidRowException(object sender, InvalidRowExceptionEventArgs e)
         {
-            e.ExceptionMode = DevExpress.Xpf.Grid.ExceptionMode.NoAction;
+            e.ExceptionMode = ExceptionMode.NoAction;
         }
 
         private void TableView_CellValueChanged(object sender, CellValueChangedEventArgs e)
         {
             if (e.Column.FieldName == nameof(PersonModel.DateOfBirth))
             {
-                int value = DateTime.UtcNow.Year - ((DateTime)e.Value).Year;
+                int value = PersonModel.GetAge(DateTime.UtcNow, (DateTime)e.Value);
                 dg_Main.SetCellValue(e.RowHandle, nameof(PersonModel.Age), value);
             }
+
+            CheckButtonAvailability(true);
         }
         #endregion
 
         #region Button Events
         private void btn_Save_Click(object sender, RoutedEventArgs e)
         {
+            if (!_isEdited) return;
+            if (dg_Main.View.HasErrors || dg_Main.View.HasValidationError)
+            {
+                MessageBox.Show("Unable to save data with errors. Correct the errors," +
+                    " or cancel all changes.", "Macrix Practical Task", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             _xmlFileService.SaveData(_collection);
+            // rewrite backup
+            _backUp = new ObservableCollection<PersonModel>();
+            _collection
+                .ForEach(x => _backUp.Add((PersonModel)x.Clone()));
+            dg_Main.SelectedItem = 0;
+
+            CheckButtonAvailability(false);
         }
 
         private void btn_Cancel_Click(object sender, RoutedEventArgs e)
         {
-            // Load data from file without save
-            _collection = _xmlFileService.LoadData() ?? new ObservableCollection<PersonModel>();
+            if (!_isEdited) return;
+            // Load data from backup
+            _collection = new ObservableCollection<PersonModel>();
+            _backUp
+                .ForEach(x => _collection.Add((PersonModel)x.Clone()));
             dg_Main.ItemsSource = _collection;
+            dg_Main.SelectedItem = 0;
+
+            CheckButtonAvailability(false);
+        }
+
+        private void CheckButtonAvailability(bool isEdited)
+        {
+            _isEdited = isEdited;
+            btn_Save.IsEnabled = _isEdited;
+            btn_Cancel.IsEnabled = _isEdited;
         }
         #endregion
     }

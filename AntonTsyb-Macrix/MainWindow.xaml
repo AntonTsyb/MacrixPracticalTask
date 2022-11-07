@@ -1,74 +1,61 @@
-﻿<Window x:Class="MacrixPracticalTask.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" x:Class="MacrixPracticalTask.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <DataGrid Grid.Column="1" FontSize="14" ItemsSource="{Binding SongList, UpdateSourceTrigger=PropertyChanged}"
-                  AutoGenerateColumns="False"  Name="mainGrid"
-                  GridLinesVisibility="None" 
-                  AreRowDetailsFrozen="True" 
-                  RowEditEnding="mainGrid_RowEditEnding"
-                  PreviewKeyDown="mainGrid_PreviewKeyDown">
-            <DataGrid.Resources>
-                <Style x:Key="errorStyle" TargetType="{x:Type TextBox}">
-                    <Setter Property="Padding" Value="-2"/>
-                    <Style.Triggers>
-                        <Trigger Property="Validation.HasError" Value="True">
-                            <Setter Property="Background" Value="Red"/>
-                            <Setter Property="ToolTip" 
-                                Value="{Binding RelativeSource={RelativeSource Self},
-                                Path=(Validation.Errors)[0].ErrorContent}"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>
-
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="Street Name" Binding="{Binding StreetName,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="House Number" Binding="{Binding HouseNumber,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="Apartment Number" Binding="{Binding ApartmentNumber,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="Postal Code" Binding="{Binding PostalCode,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="Town" Binding="{Binding Town,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber,UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True}"/>
-                <DataGridTemplateColumn Header="Date of Birth" IsReadOnly="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DatePicker SelectedDate="{Binding DateOfBirth}"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Age" Binding="{Binding Age}" IsReadOnly="True"/>
-            </DataGrid.Columns>
-            <DataGrid.RowValidationRules>
-                <DataErrorValidationRule ValidatesOnTargetUpdated="True" ValidationStep="UpdatedValue" />
-            </DataGrid.RowValidationRules>
-
-            <DataGrid.RowValidationErrorTemplate>
-                <ControlTemplate>
-                    <Grid Margin="0,-2,0,-2"
-            ToolTip="{Binding RelativeSource={RelativeSource
-            FindAncestor, AncestorType={x:Type DataGridRow}},
-            Path=(Validation.Errors)[0].ErrorContent}">
-                        <Ellipse StrokeThickness="0" Fill="Red" 
-              Width="{TemplateBinding FontSize}" 
-              Height="{TemplateBinding FontSize}" />
-                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
-              FontWeight="Bold" Foreground="White" 
-              HorizontalAlignment="Center"  />
-                    </Grid>
-                </ControlTemplate>
-            </DataGrid.RowValidationErrorTemplate>
-        </DataGrid>
-        <Button Width="200" 
-                Height="30" 
-                VerticalAlignment="Bottom" 
-                HorizontalAlignment="Center">
-            This is a button
-        </Button>
-    </Grid>
+        Title="Macrix Practical Task" Height="653" Width="1200">
+    <dxlc:LayoutControl>
+        <dxg:GridControl x:Name="dg_Main" Margin="0,0,-168,46">
+            <dxg:GridControl.View>
+                <dxg:TableView ShowGroupPanel="False"
+                               NewItemRowPosition="Top" 
+                               AddingNewRow="TableView_AddingNewRow"
+                               CellValueChanged="TableView_CellValueChanged"
+                               ValidateRowDeletionCommand="{Binding ValidateRowDeletionCommand}"
+                               ValidateRow="OnValidateRow"
+                               InvalidRowException="OnInvalidRowException"/>
+            </dxg:GridControl.View>
+            <dxg:GridControl.InputBindings>
+                <KeyBinding Command="{Binding View.Commands.DeleteFocusedRow, ElementName=dg_Main}" Key="Delete" />
+            </dxg:GridControl.InputBindings>
+            <dxg:GridColumn Header="First Name" FieldName="FirstName" IsSmart="True" AllowEditing="True">
+                <dxg:GridColumn.EditSettings>
+                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+            <dxg:GridColumn Header="Last Name" FieldName="LastName" AllowEditing="True">
+                <dxg:GridColumn.EditSettings>
+                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+            <dxg:GridColumn Header="Street Name" FieldName="StreetName" AllowEditing="True">
+                <dxg:GridColumn.EditSettings>
+                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+            <dxg:GridColumn Header="House Number" FieldName="HouseNumber" AllowEditing="True"/>
+            <dxg:GridColumn Header="Apartment Number" FieldName="ApartmentNumber" AllowEditing="True"/>
+            <dxg:GridColumn Header="Postal Code" FieldName="PostalCode" AllowEditing="True">
+                <dxg:GridColumn.EditSettings>
+                    <dxe:TextEditSettings MaskType="RegEx" Mask="\d{0,5}"/>
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+            <dxg:GridColumn Header="Town" FieldName="Town" AllowEditing="True">
+                <dxg:GridColumn.EditSettings>
+                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+            <dxg:GridColumn Header="Phone Number" FieldName="PhoneNumber" AllowEditing="True" IsSmart="True">
+                <dxg:GridColumn.EditSettings>
+                    <dxe:TextEditSettings MaskType="RegEx" Mask="\d{5,11}" />
+                </dxg:GridColumn.EditSettings>
+            </dxg:GridColumn>
+            <dxg:GridColumn Header="Date of Birth" FieldName="DateOfBirth" AllowEditing="True" IsSmart="True"/>
+            <dxg:GridColumn Header="Age" FieldName="Age" ReadOnly="True" AllowEditing="False"/>
+        </dxg:GridControl>
+        <dx:SimpleButton x:Name="btn_Save" Content="Save" HorizontalAlignment="Center" Height="25" VerticalAlignment="Bottom" Width="80" MaxWidth="80" MaxHeight="25" MinWidth="80" MinHeight="25" Click="btn_Save_Click"/>
+        <dx:SimpleButton x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Center" Height="25" VerticalAlignment="Bottom" Width="80" MinWidth="80" MinHeight="25" MaxWidth="80" MaxHeight="25" Click="btn_Cancel_Click"/>
+    </dxlc:LayoutControl>
 </Window>

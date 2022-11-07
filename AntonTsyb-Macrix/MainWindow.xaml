@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" x:Class="MacrixPracticalTask.MainWindow"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v22.1" xmlns:dxmvvm1="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v22.1" x:Class="MacrixPracticalTask.MainWindow"
         mc:Ignorable="d"
         Title="Macrix Practical Task" Height="653" Width="1200">
     <dxlc:LayoutControl>
@@ -13,28 +13,20 @@
                                NewItemRowPosition="Top" 
                                AddingNewRow="TableView_AddingNewRow"
                                CellValueChanged="TableView_CellValueChanged"
-                               ValidateRowDeletionCommand="{Binding ValidateRowDeletionCommand}"
+                               ValidateRowDeletion="TableView_ValidateRowDeletion"
                                ValidateRow="OnValidateRow"
-                               InvalidRowException="OnInvalidRowException"/>
+                               InvalidRowException="OnInvalidRowException"
+                               ShowValidationAttributeErrors="True" 
+                               AllowGroupingSortingBySingleColumnOnly="True"
+                               AllowCommitOnValidationAttributeError="False"
+                               ErrorsWatchMode="Cells"/>
             </dxg:GridControl.View>
             <dxg:GridControl.InputBindings>
                 <KeyBinding Command="{Binding View.Commands.DeleteFocusedRow, ElementName=dg_Main}" Key="Delete" />
             </dxg:GridControl.InputBindings>
-            <dxg:GridColumn Header="First Name" FieldName="FirstName" IsSmart="True" AllowEditing="True">
-                <dxg:GridColumn.EditSettings>
-                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
-                </dxg:GridColumn.EditSettings>
-            </dxg:GridColumn>
-            <dxg:GridColumn Header="Last Name" FieldName="LastName" AllowEditing="True">
-                <dxg:GridColumn.EditSettings>
-                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
-                </dxg:GridColumn.EditSettings>
-            </dxg:GridColumn>
-            <dxg:GridColumn Header="Street Name" FieldName="StreetName" AllowEditing="True">
-                <dxg:GridColumn.EditSettings>
-                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
-                </dxg:GridColumn.EditSettings>
-            </dxg:GridColumn>
+            <dxg:GridColumn Header="First Name" FieldName="FirstName" IsSmart="True" AllowEditing="True"/>
+            <dxg:GridColumn Header="Last Name" FieldName="LastName" AllowEditing="True"/>
+            <dxg:GridColumn Header="Street Name" FieldName="StreetName" AllowEditing="True"/>
             <dxg:GridColumn Header="House Number" FieldName="HouseNumber" AllowEditing="True"/>
             <dxg:GridColumn Header="Apartment Number" FieldName="ApartmentNumber" AllowEditing="True"/>
             <dxg:GridColumn Header="Postal Code" FieldName="PostalCode" AllowEditing="True">
@@ -42,18 +34,14 @@
                     <dxe:TextEditSettings MaskType="RegEx" Mask="\d{0,5}"/>
                 </dxg:GridColumn.EditSettings>
             </dxg:GridColumn>
-            <dxg:GridColumn Header="Town" FieldName="Town" AllowEditing="True">
-                <dxg:GridColumn.EditSettings>
-                    <dxe:TextEditSettings MaskType="RegEx" Mask="[a-zA-Z]+"/>
-                </dxg:GridColumn.EditSettings>
-            </dxg:GridColumn>
+            <dxg:GridColumn Header="Town" FieldName="Town" AllowEditing="True"/>
             <dxg:GridColumn Header="Phone Number" FieldName="PhoneNumber" AllowEditing="True" IsSmart="True">
                 <dxg:GridColumn.EditSettings>
                     <dxe:TextEditSettings MaskType="RegEx" Mask="\d{5,11}" />
                 </dxg:GridColumn.EditSettings>
             </dxg:GridColumn>
             <dxg:GridColumn Header="Date of Birth" FieldName="DateOfBirth" AllowEditing="True" IsSmart="True"/>
-            <dxg:GridColumn Header="Age" FieldName="Age" ReadOnly="True" AllowEditing="False"/>
+            <dxg:GridColumn Header="Age" FieldName="Age" ReadOnly="True" AllowEditing="False" AllowFocus="False" TabStop="False"/>
         </dxg:GridControl>
         <dx:SimpleButton x:Name="btn_Save" Content="Save" HorizontalAlignment="Center" Height="25" VerticalAlignment="Bottom" Width="80" MaxWidth="80" MaxHeight="25" MinWidth="80" MinHeight="25" Click="btn_Save_Click"/>
         <dx:SimpleButton x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Center" Height="25" VerticalAlignment="Bottom" Width="80" MinWidth="80" MinHeight="25" MaxWidth="80" MaxHeight="25" Click="btn_Cancel_Click"/>

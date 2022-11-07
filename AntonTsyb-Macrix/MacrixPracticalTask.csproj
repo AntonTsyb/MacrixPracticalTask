@@ -8,4 +8,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="devexpress.wpf.grid.core" Version="22.1.6" />
+    <PackageReference Include="devexpress.wpf.layoutcontrol" Version="22.1.6" />
+  </ItemGroup>
+
 </Project>

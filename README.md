@@ -23,3 +23,6 @@ Save button is pressed changes made by a user should be stored in the XML file. 
 "Cancel" button discards user changes and causes the table to be refreshed based on the data stored
 in the XML file. The buttons should be active only if the table contains unsaved data. After the first
 startup of the application, the table should be empty.
+
+
+To Delete focused row use 'Delete' button

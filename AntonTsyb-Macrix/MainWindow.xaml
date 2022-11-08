@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v22.1" xmlns:dxmvvm1="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v22.1" x:Class="MacrixPracticalTask.MainWindow"
         mc:Ignorable="d"
-        Title="Macrix Practical Task" Height="653" Width="1200">
+        Title="Macrix Practical Task" Height="653" Width="1200" WindowStartupLocation="CenterScreen">
     <dxlc:LayoutControl>
         <dxg:GridControl x:Name="dg_Main" Margin="0,0,-168,46">
             <dxg:GridControl.View>

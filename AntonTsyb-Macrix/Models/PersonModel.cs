@@ -82,6 +82,7 @@ namespace MacrixPracticalTask.Models
         }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "The Date of birth cannot be empty. Please correct.")]
+        [ValidateYears(ErrorMessage = "Date of birth is not valid")]
         public DateTime DateOfBirth
         {
             get => _dateOfBirth;
@@ -219,7 +220,7 @@ namespace MacrixPracticalTask.Models
         #region ICloneable
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
         #endregion
     }

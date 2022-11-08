@@ -23,13 +23,20 @@ namespace MacrixPracticalTask
             InitializeComponent();
             _xmlFileService = new XmlFileService();
             _collection = _xmlFileService.LoadData() ?? new ObservableCollection<PersonModel>();
-            //_backUp = new ObservableCollection<PersonModel>(_collection);
-            _backUp = new ObservableCollection<PersonModel>();
-            _collection
-                .ForEach(x => _backUp.Add((PersonModel)x.Clone()));
+            _backUp = CopyCollection(_collection, _backUp);
             dg_Main.ItemsSource = _collection;
 
             CheckButtonAvailability(false);
+        }
+
+        private ObservableCollection<PersonModel> CopyCollection(
+            ObservableCollection<PersonModel> source,
+            ObservableCollection<PersonModel>? target)
+        {
+            target = new ObservableCollection<PersonModel>();
+            source
+                .ForEach(x => target.Add((PersonModel)x.Clone()));
+            return target;
         }
 
         #region GridControl Events
@@ -102,6 +109,7 @@ namespace MacrixPracticalTask
             if (e.Column.FieldName == nameof(PersonModel.DateOfBirth))
             {
                 int value = PersonModel.GetAge(DateTime.UtcNow, (DateTime)e.Value);
+                if (value < 0) value = 0;
                 dg_Main.SetCellValue(e.RowHandle, nameof(PersonModel.Age), value);
             }
 
@@ -122,9 +130,7 @@ namespace MacrixPracticalTask
 
             _xmlFileService.SaveData(_collection);
             // rewrite backup
-            _backUp = new ObservableCollection<PersonModel>();
-            _collection
-                .ForEach(x => _backUp.Add((PersonModel)x.Clone()));
+            _backUp = CopyCollection(_collection, _backUp);
             dg_Main.SelectedItem = 0;
 
             CheckButtonAvailability(false);
@@ -134,9 +140,8 @@ namespace MacrixPracticalTask
         {
             if (!_isEdited) return;
             // Load data from backup
-            _collection = new ObservableCollection<PersonModel>();
-            _backUp
-                .ForEach(x => _collection.Add((PersonModel)x.Clone()));
+            _collection = CopyCollection(_backUp, _collection);
+
             dg_Main.ItemsSource = _collection;
             dg_Main.SelectedItem = 0;
 
